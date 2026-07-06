@@ -1,7 +1,7 @@
 local game = {}
+local gameState = require("state")
 local squares = {}
 local eyetable = {}
-local next_act = false
 local SQUARE_SIZE = 20
 local SCREEN_W = 320
 local SCREEN_H = 200
@@ -59,17 +59,14 @@ local function spawnEye()
   rathit:play()
   local px = math.random(5,SCREEN_W - 5)
   local py = math.random(5,87)
+  if #eyetable < 50 then
   table.insert(eyetable, {x = px, y = py})
-    if #eyetable < 40 then
-      SPAWN_INTERVAL = 2 - #eyetable * 0.025
-      if SPAWN_INTERVAL < 0.4 then
-        SPAWN_INTERVAL = 0.4
-      end
+  end
+  if #eyetable < 40 then
+    SPAWN_INTERVAL = 2 - #eyetable * 0.025
+    if SPAWN_INTERVAL < 0.35 then
+      SPAWN_INTERVAL = 0.35
     end
-  if #eyetable > 100 then
-    for i = #eyetable, 100 do
-    table.remove(#eyetable, 0)
-    end 
   end
 end
 
@@ -82,7 +79,7 @@ function game.load()
 
   rathit = love.audio.newSource("assets/rathit.wav")
   eyeshot = love.audio.newSource("assets/eyeshot.wav")
-  altarshot = love.audio.newSource("assets/altarshot.wav")
+  altarshot = love.audio.newSource("assets/altarsho.wav")
 
   ratclimpsheet = love.graphics.newImage("assets/rat_c.png")
   for i = 0, 1 do
@@ -126,8 +123,8 @@ function game.update(dt)
     altar.activated = false
   end
 
-  if altar.kills > 150 then
-    next_act = true
+  if altar.kills > 1 then
+    gameState.next_act = true
   end
 
   for i = #squares, 1, -1 do
@@ -246,9 +243,7 @@ function game.draw()
   end
 
   love.graphics.draw(mobsheet, mobquads[mobframe], 0, SCREEN_H - 20 )
-  if next_act then
-  love.graphics.print("Next act (Enter)", 5, 5)
-  end
+
   -- cursor
   local mx, my = love.mouse.getPosition()
   love.graphics.draw(eyesheet, eyequads[eyeframe], mx - 8, my - 8)
