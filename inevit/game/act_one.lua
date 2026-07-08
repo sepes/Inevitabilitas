@@ -42,6 +42,7 @@ local FRAME_COUNT_EYE = 2
 local FRAME_COUNT_ALTAR = 3
 local mouseX = 0
 local mouseY = 0
+local music_act_one
 
 local function spawnSquare()
   local x = math.random(0, SCREEN_W - SQUARE_SIZE)
@@ -73,7 +74,7 @@ end
 function game.load()
   math.randomseed(os.time())
   gbg = love.graphics.newImage("assets/gbg.png")
-  local music_act_one = love.audio.newSource("assets/one_them.wav")
+  music_act_one = love.audio.newSource("assets/one_them.wav")
   music_act_one:setLooping(true)
   music_act_one:play()
 
@@ -123,8 +124,9 @@ function game.update(dt)
     altar.activated = false
   end
 
-  if altar.kills > 1 then
+  if altar.kills >= 40 then
     gameState.next_act = true
+    music_act_one:stop()
   end
 
   for i = #squares, 1, -1 do

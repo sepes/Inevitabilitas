@@ -94,6 +94,10 @@ function love.keypressed(key)
     transitionState = 1
     theme:stop()
   end
+  if gameStarted and key == "return" and gameState.next_act then
+    transitionState = 1
+  end
+
   if gameStarted and game.keypressed then
     game.keypressed(key)
   end
