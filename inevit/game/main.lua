@@ -4,6 +4,7 @@ local game = nil
 local gameState = require("state")
 local blinkTimer = 0
 local blinkVisible = true
+local debugMode = false
 local theme
 local transitionTimer = 300
 local transitionValue = -200
@@ -84,6 +85,11 @@ function love.draw()
     love.graphics.rectangle("fill", 0, transitionValue, 320, 200)
     love.graphics.setColor(255, 255, 255)
   end
+
+  -- debug, f8 to show in game
+  if debugMode then
+    love.graphics.print("Memory: " .. math.floor(collectgarbage("count")) .. "kb", 240, 0)
+  end
 end
 
 function love.keypressed(key)
@@ -97,9 +103,11 @@ function love.keypressed(key)
   if gameStarted and key == "return" and gameState.next_act then
     transitionState = 1
   end
-
   if gameStarted and game.keypressed then
     game.keypressed(key)
+  end
+  if key == "f8" then
+    debugMode = not debugMode
   end
 end
 
