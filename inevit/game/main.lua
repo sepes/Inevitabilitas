@@ -1,10 +1,9 @@
 local bg
 local gameStarted = false
 local game = nil
-local gameState = require("state")
+local global = require("global")
 local blinkTimer = 0
 local blinkVisible = true
-local debugMode = false
 local theme
 local transitionTimer = 300
 local transitionValue = -200
@@ -13,14 +12,14 @@ local FRAME_SPEED = 0.5
 
 local function nextAct()
   gameStarted = true
-  if gameState.activeAct == 1 then
+  if global.activeAct == 1 then
     game = require("act_two")
   end
-  if gameState.activeAct == 0 then
+  if global.activeAct == 0 then
     game = require("act_one")
   end
-    gameState.activeAct = gameState.activeAct + 1
-    gameState.next_act = false
+    global.activeAct = global.activeAct + 1
+    global.next_act = false
     game.load()
 end
 
@@ -31,7 +30,7 @@ function love.load()
   theme:setLooping(true)
   theme:play()
   end
-  gameState.next_act = true
+  global.next_act = true
 end
 
 function love.update(dt)
@@ -73,10 +72,10 @@ function love.draw()
   love.graphics.draw(bg, 0, 0)
   end
   if blinkVisible then
-    if gameState.activeAct == 0 then
+    if global.activeAct == 0 then
       love.graphics.print("Press Enter to Start", 320/2-50, 200/2-10)
     end
-    if gameState.activeAct == 1 and gameState.next_act then
+    if global.activeAct == 1 and global.next_act then
       love.graphics.print("Next act (Enter)", 5, 5)
     end 
   end
@@ -87,8 +86,10 @@ function love.draw()
   end
 
   -- debug, f8 to show in game
-  if debugMode then
+  if global.devMode then
     love.graphics.print("Memory: " .. math.floor(collectgarbage("count")) .. "kb", 240, 0)
+    love.graphics.print("Act: " .. global.activeAct, 240, 20)
+    love.graphics.print("Kills: " .. global.kills, 240, 10)
   end
 end
 
@@ -96,18 +97,18 @@ function love.keypressed(key)
   if key == "escape" then
     love.event.quit()
   end
-  if not gameStarted and key == "return" and gameState.next_act then
+  if not gameStarted and key == "return" and global.next_act then
     transitionState = 1
     theme:stop()
   end
-  if gameStarted and key == "return" and gameState.next_act then
+  if gameStarted and key == "return" and global.next_act then
     transitionState = 1
   end
   if gameStarted and game.keypressed then
     game.keypressed(key)
   end
   if key == "f8" then
-    debugMode = not debugMode
+    global.devMode = not global.devMode
   end
 end
 

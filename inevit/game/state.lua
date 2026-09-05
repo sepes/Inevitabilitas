@@ -1,1 +1,0 @@
-return {next_act = nil, activeAct = 0}

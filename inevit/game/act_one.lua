@@ -1,5 +1,5 @@
 local game = {}
-local gameState = require("state")
+local global = require("global")
 local squares = {}
 local eyetable = {}
 local SQUARE_SIZE = 20
@@ -114,6 +114,9 @@ function game.load()
 end
 
 function game.update(dt)
+
+  global.kills = altar.kills  
+
   SPAWN_TIMER = SPAWN_TIMER + dt
   if SPAWN_TIMER >= SPAWN_INTERVAL then
     SPAWN_TIMER = 0
@@ -124,8 +127,13 @@ function game.update(dt)
     altar.activated = false
   end
 
+  global.next_act = global.devMode
+
   if altar.kills >= 40 then
-    gameState.next_act = true
+    global.next_act = true
+  end
+
+  if global.next_act then
     music_act_one:stop()
   end
 

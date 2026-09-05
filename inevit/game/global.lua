@@ -1,0 +1,1 @@
+return {next_act = nil, activeAct = 0, devMode = nil, kills = 0}
